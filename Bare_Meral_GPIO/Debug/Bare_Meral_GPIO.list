@@ -1,0 +1,453 @@
+
+Bare_Meral_GPIO.elf:     file format elf32-littlearm
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .isr_vector   00000198  08000000  08000000  00001000  2**0
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  1 .text         00000254  08000198  08000198  00001198  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  2 .rodata       00000000  080003ec  080003f4  000013f4  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  3 .ARM.extab    00000000  080003ec  080003ec  000013f4  2**0
+                  CONTENTS
+  4 .ARM          00000000  080003ec  080003ec  000013f4  2**0
+                  CONTENTS
+  5 .preinit_array 00000000  080003ec  080003f4  000013f4  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  6 .init_array   00000004  080003ec  080003ec  000013ec  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  7 .fini_array   00000004  080003f0  080003f0  000013f0  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  8 .data         00000000  20000000  20000000  000013f4  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  9 .bss          0000001c  20000000  080003f4  00002000  2**2
+                  ALLOC
+ 10 ._user_heap_stack 00000604  2000001c  080003f4  0000201c  2**0
+                  ALLOC
+ 11 .ARM.attributes 00000030  00000000  00000000  000013f4  2**0
+                  CONTENTS, READONLY
+ 12 .debug_info   00000345  00000000  00000000  00001424  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 13 .debug_abbrev 00000103  00000000  00000000  00001769  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 14 .debug_aranges 00000050  00000000  00000000  00001870  2**3
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 15 .debug_rnglists 00000033  00000000  00000000  000018c0  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 16 .debug_macro  0000dc4e  00000000  00000000  000018f3  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 17 .debug_line   0000082c  00000000  00000000  0000f541  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 18 .debug_str    0004fb00  00000000  00000000  0000fd6d  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 19 .comment      00000043  00000000  00000000  0005f86d  2**0
+                  CONTENTS, READONLY
+ 20 .debug_frame  00000080  00000000  00000000  0005f8b0  2**2
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 21 .debug_line_str 00000057  00000000  00000000  0005f930  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+
+Disassembly of section .text:
+
+08000198 <__do_global_dtors_aux>:
+ 8000198:	b510      	push	{r4, lr}
+ 800019a:	4c05      	ldr	r4, [pc, #20]	@ (80001b0 <__do_global_dtors_aux+0x18>)
+ 800019c:	7823      	ldrb	r3, [r4, #0]
+ 800019e:	b933      	cbnz	r3, 80001ae <__do_global_dtors_aux+0x16>
+ 80001a0:	4b04      	ldr	r3, [pc, #16]	@ (80001b4 <__do_global_dtors_aux+0x1c>)
+ 80001a2:	b113      	cbz	r3, 80001aa <__do_global_dtors_aux+0x12>
+ 80001a4:	4804      	ldr	r0, [pc, #16]	@ (80001b8 <__do_global_dtors_aux+0x20>)
+ 80001a6:	f3af 8000 	nop.w
+ 80001aa:	2301      	movs	r3, #1
+ 80001ac:	7023      	strb	r3, [r4, #0]
+ 80001ae:	bd10      	pop	{r4, pc}
+ 80001b0:	20000000 	.word	0x20000000
+ 80001b4:	00000000 	.word	0x00000000
+ 80001b8:	080003d4 	.word	0x080003d4
+
+080001bc <frame_dummy>:
+ 80001bc:	b508      	push	{r3, lr}
+ 80001be:	4b03      	ldr	r3, [pc, #12]	@ (80001cc <frame_dummy+0x10>)
+ 80001c0:	b11b      	cbz	r3, 80001ca <frame_dummy+0xe>
+ 80001c2:	4903      	ldr	r1, [pc, #12]	@ (80001d0 <frame_dummy+0x14>)
+ 80001c4:	4803      	ldr	r0, [pc, #12]	@ (80001d4 <frame_dummy+0x18>)
+ 80001c6:	f3af 8000 	nop.w
+ 80001ca:	bd08      	pop	{r3, pc}
+ 80001cc:	00000000 	.word	0x00000000
+ 80001d0:	20000004 	.word	0x20000004
+ 80001d4:	080003d4 	.word	0x080003d4
+
+080001d8 <my_delay>:
+// PD12 --output pin -- port D LED connected in board
+
+#include "stm32f4xx.h"
+
+void my_delay()
+{
+ 80001d8:	b480      	push	{r7}
+ 80001da:	b083      	sub	sp, #12
+ 80001dc:	af00      	add	r7, sp, #0
+	int i,j;
+
+for (i=0;i<1000;i++)
+ 80001de:	2300      	movs	r3, #0
+ 80001e0:	607b      	str	r3, [r7, #4]
+ 80001e2:	e00c      	b.n	80001fe <my_delay+0x26>
+	for(j=0;j<500;j++)
+ 80001e4:	2300      	movs	r3, #0
+ 80001e6:	603b      	str	r3, [r7, #0]
+ 80001e8:	e002      	b.n	80001f0 <my_delay+0x18>
+ 80001ea:	683b      	ldr	r3, [r7, #0]
+ 80001ec:	3301      	adds	r3, #1
+ 80001ee:	603b      	str	r3, [r7, #0]
+ 80001f0:	683b      	ldr	r3, [r7, #0]
+ 80001f2:	f5b3 7ffa 	cmp.w	r3, #500	@ 0x1f4
+ 80001f6:	dbf8      	blt.n	80001ea <my_delay+0x12>
+for (i=0;i<1000;i++)
+ 80001f8:	687b      	ldr	r3, [r7, #4]
+ 80001fa:	3301      	adds	r3, #1
+ 80001fc:	607b      	str	r3, [r7, #4]
+ 80001fe:	687b      	ldr	r3, [r7, #4]
+ 8000200:	f5b3 7f7a 	cmp.w	r3, #1000	@ 0x3e8
+ 8000204:	dbee      	blt.n	80001e4 <my_delay+0xc>
+		{
+		}
+}
+ 8000206:	bf00      	nop
+ 8000208:	bf00      	nop
+ 800020a:	370c      	adds	r7, #12
+ 800020c:	46bd      	mov	sp, r7
+ 800020e:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8000212:	4770      	bx	lr
+
+08000214 <main>:
+
+
+int main()
+{
+ 8000214:	b580      	push	{r7, lr}
+ 8000216:	af00      	add	r7, sp, #0
+	//RCC enable for port D --> clock enable
+		RCC->AHB1ENR |= (1U<<3);  //Port D is connected to AHB1BUS to enable that we need to set the PIN 3 in (GPIOD EN) so Bitwise OR with
+ 8000218:	4b44      	ldr	r3, [pc, #272]	@ (800032c <main+0x118>)
+ 800021a:	6b1b      	ldr	r3, [r3, #48]	@ 0x30
+ 800021c:	4a43      	ldr	r2, [pc, #268]	@ (800032c <main+0x118>)
+ 800021e:	f043 0308 	orr.w	r3, r3, #8
+ 8000222:	6313      	str	r3, [r2, #48]	@ 0x30
+		                           // RCC->AHB1ENR | = (1U<<3) 3 times.
+	//RCC enable for port C --> clock enable
+		RCC->AHB1ENR |= (1U<<2);  //Port C is connected to AHB1BUS to enable that we need to set the PIN 2 in (GPIOC EN) so Bitwise OR with
+ 8000224:	4b41      	ldr	r3, [pc, #260]	@ (800032c <main+0x118>)
+ 8000226:	6b1b      	ldr	r3, [r3, #48]	@ 0x30
+ 8000228:	4a40      	ldr	r2, [pc, #256]	@ (800032c <main+0x118>)
+ 800022a:	f043 0304 	orr.w	r3, r3, #4
+ 800022e:	6313      	str	r3, [r2, #48]	@ 0x30
+				                           // RCC->AHB1ENR | = (1U<<2) 2 times.
+		//  PORT C 14th PIN as input
+		GPIOC->MODER &= ~(1U<<28); // set BIT no 24-- in GPIO port mode register 14th PIN is with MODER14 connected to 28th and 29th bit of register
+ 8000230:	4b3f      	ldr	r3, [pc, #252]	@ (8000330 <main+0x11c>)
+ 8000232:	681b      	ldr	r3, [r3, #0]
+ 8000234:	4a3e      	ldr	r2, [pc, #248]	@ (8000330 <main+0x11c>)
+ 8000236:	f023 5380 	bic.w	r3, r3, #268435456	@ 0x10000000
+ 800023a:	6013      	str	r3, [r2, #0]
+		GPIOC->MODER &= ~(1U<<29);  //Reset BIT no 29 --to Select PIN 14th of PORT C as output pin
+ 800023c:	4b3c      	ldr	r3, [pc, #240]	@ (8000330 <main+0x11c>)
+ 800023e:	681b      	ldr	r3, [r3, #0]
+ 8000240:	4a3b      	ldr	r2, [pc, #236]	@ (8000330 <main+0x11c>)
+ 8000242:	f023 5300 	bic.w	r3, r3, #536870912	@ 0x20000000
+ 8000246:	6013      	str	r3, [r2, #0]
+		//  PORT C 9th PIN as output
+		GPIOC->MODER |= (1U<<18); // set BIT no 18-- in GPIO port mode register 9th PIN is with MODER9 connected to 18th and 19th bit of register
+ 8000248:	4b39      	ldr	r3, [pc, #228]	@ (8000330 <main+0x11c>)
+ 800024a:	681b      	ldr	r3, [r3, #0]
+ 800024c:	4a38      	ldr	r2, [pc, #224]	@ (8000330 <main+0x11c>)
+ 800024e:	f443 2380 	orr.w	r3, r3, #262144	@ 0x40000
+ 8000252:	6013      	str	r3, [r2, #0]
+		GPIOC->MODER &= ~(1U<<19);  //Reset BIT no 19 -- to Select PIN 9th of PORT C as output pin
+ 8000254:	4b36      	ldr	r3, [pc, #216]	@ (8000330 <main+0x11c>)
+ 8000256:	681b      	ldr	r3, [r3, #0]
+ 8000258:	4a35      	ldr	r2, [pc, #212]	@ (8000330 <main+0x11c>)
+ 800025a:	f423 2300 	bic.w	r3, r3, #524288	@ 0x80000
+ 800025e:	6013      	str	r3, [r2, #0]
+
+
+		//  SET PD12(LED1) as OUTPUT PIN
+		GPIOD->MODER |= (1U<<24); // set BIT no 24-- in GPIO port mode register 12th PIN is with MODER12 connected to 24th and 25th bit of register
+ 8000260:	4b34      	ldr	r3, [pc, #208]	@ (8000334 <main+0x120>)
+ 8000262:	681b      	ldr	r3, [r3, #0]
+ 8000264:	4a33      	ldr	r2, [pc, #204]	@ (8000334 <main+0x120>)
+ 8000266:	f043 7380 	orr.w	r3, r3, #16777216	@ 0x1000000
+ 800026a:	6013      	str	r3, [r2, #0]
+		GPIOD->MODER &= ~(1U<<25);  //Reset BIT no 25 --to Select PIN 12th of PORT D as output pin
+ 800026c:	4b31      	ldr	r3, [pc, #196]	@ (8000334 <main+0x120>)
+ 800026e:	681b      	ldr	r3, [r3, #0]
+ 8000270:	4a30      	ldr	r2, [pc, #192]	@ (8000334 <main+0x120>)
+ 8000272:	f023 7300 	bic.w	r3, r3, #33554432	@ 0x2000000
+ 8000276:	6013      	str	r3, [r2, #0]
+
+		//  SET PD13(LED2) as OUTPUT PIN
+		GPIOD->MODER |= (1U<<26); // set BIT no 26-- in GPIO port mode register 13th PIN is with MODER13 connected to 26th and 27th bit of register
+ 8000278:	4b2e      	ldr	r3, [pc, #184]	@ (8000334 <main+0x120>)
+ 800027a:	681b      	ldr	r3, [r3, #0]
+ 800027c:	4a2d      	ldr	r2, [pc, #180]	@ (8000334 <main+0x120>)
+ 800027e:	f043 6380 	orr.w	r3, r3, #67108864	@ 0x4000000
+ 8000282:	6013      	str	r3, [r2, #0]
+		GPIOD->MODER &= ~(1U<<27);  //Reset BIT no 27-- to Select PIN 13th of PORT D as output pin
+ 8000284:	4b2b      	ldr	r3, [pc, #172]	@ (8000334 <main+0x120>)
+ 8000286:	681b      	ldr	r3, [r3, #0]
+ 8000288:	4a2a      	ldr	r2, [pc, #168]	@ (8000334 <main+0x120>)
+ 800028a:	f023 6300 	bic.w	r3, r3, #134217728	@ 0x8000000
+ 800028e:	6013      	str	r3, [r2, #0]
+		//  SET PD14(LED3) as OUTPUT PIN
+		GPIOD->MODER |= (1U<<28); // set BIT no 28-- in GPIO port mode register 14th PIN is with MODER14 connected to 28th and 29th bit of
+ 8000290:	4b28      	ldr	r3, [pc, #160]	@ (8000334 <main+0x120>)
+ 8000292:	681b      	ldr	r3, [r3, #0]
+ 8000294:	4a27      	ldr	r2, [pc, #156]	@ (8000334 <main+0x120>)
+ 8000296:	f043 5380 	orr.w	r3, r3, #268435456	@ 0x10000000
+ 800029a:	6013      	str	r3, [r2, #0]
+		GPIOD->MODER &= ~(1U<<29);  // MODER register and Reset BIT no 29 ---to Select PIN 14th of PORT D as output pin
+ 800029c:	4b25      	ldr	r3, [pc, #148]	@ (8000334 <main+0x120>)
+ 800029e:	681b      	ldr	r3, [r3, #0]
+ 80002a0:	4a24      	ldr	r2, [pc, #144]	@ (8000334 <main+0x120>)
+ 80002a2:	f023 5300 	bic.w	r3, r3, #536870912	@ 0x20000000
+ 80002a6:	6013      	str	r3, [r2, #0]
+		//  SET PD15(LED4) as OUTPUT PIN
+		GPIOD->MODER |= (1U<<30); // set BIT no 30, in GPIO port mode register 15th PIN is with MODER15 connected to 30th and 31th bit of
+ 80002a8:	4b22      	ldr	r3, [pc, #136]	@ (8000334 <main+0x120>)
+ 80002aa:	681b      	ldr	r3, [r3, #0]
+ 80002ac:	4a21      	ldr	r2, [pc, #132]	@ (8000334 <main+0x120>)
+ 80002ae:	f043 4380 	orr.w	r3, r3, #1073741824	@ 0x40000000
+ 80002b2:	6013      	str	r3, [r2, #0]
+		GPIOD->MODER &= ~(1U<<31);  // MODERregister and Reset BIT no 31 -- to Select PIN 15th of PORT D as output pin
+ 80002b4:	4b1f      	ldr	r3, [pc, #124]	@ (8000334 <main+0x120>)
+ 80002b6:	681b      	ldr	r3, [r3, #0]
+ 80002b8:	4a1e      	ldr	r2, [pc, #120]	@ (8000334 <main+0x120>)
+ 80002ba:	f023 4300 	bic.w	r3, r3, #2147483648	@ 0x80000000
+ 80002be:	6013      	str	r3, [r2, #0]
+/**ASSIGNMENT 4************* and TURN ON FOUR LED and TURN OFF all Four LED's *****************/
+
+//To Select PIN 12,13,14 and 15th  of PORT D as output pin
+
+
+	 GPIOD->ODR |= (1U<<12); //To set LED1 (connected to PD12on board) ---- IN Output Data register(ODR) set 12th Pin as HIGH
+ 80002c0:	4b1c      	ldr	r3, [pc, #112]	@ (8000334 <main+0x120>)
+ 80002c2:	695b      	ldr	r3, [r3, #20]
+ 80002c4:	4a1b      	ldr	r2, [pc, #108]	@ (8000334 <main+0x120>)
+ 80002c6:	f443 5380 	orr.w	r3, r3, #4096	@ 0x1000
+ 80002ca:	6153      	str	r3, [r2, #20]
+	 //GPIOD->BSRR |= (1U<<12); To set LED1 Using BSRR Register. (Use ODR or BSSR any one)
+	 GPIOD->ODR |= (1U<<13); //To set LED2 (connected to PD13on board) ---- IN Output Data register(ODR) set 13th Pin as HIGH
+ 80002cc:	4b19      	ldr	r3, [pc, #100]	@ (8000334 <main+0x120>)
+ 80002ce:	695b      	ldr	r3, [r3, #20]
+ 80002d0:	4a18      	ldr	r2, [pc, #96]	@ (8000334 <main+0x120>)
+ 80002d2:	f443 5300 	orr.w	r3, r3, #8192	@ 0x2000
+ 80002d6:	6153      	str	r3, [r2, #20]
+	 //GPIOD->BSRR |= (1U<<13); To set LED2 Using BSRR Register. (Use ODR or BSSR any one)
+	 GPIOD->ODR |= (1U<<14); //To set LED3 (connected to PD14on board) ---- IN Output Data register(ODR) set 14th Pin as HIGH
+ 80002d8:	4b16      	ldr	r3, [pc, #88]	@ (8000334 <main+0x120>)
+ 80002da:	695b      	ldr	r3, [r3, #20]
+ 80002dc:	4a15      	ldr	r2, [pc, #84]	@ (8000334 <main+0x120>)
+ 80002de:	f443 4380 	orr.w	r3, r3, #16384	@ 0x4000
+ 80002e2:	6153      	str	r3, [r2, #20]
+	  // GPIOD->BSRR |= (1U<<14); To Reset LED3 Using BSRR Register. (Use ODR or BSSR any one)
+	 GPIOD->ODR |= (1U<<15); //To set LED4 (connected to PD15on board) ---- IN Output Data register(ODR) set 15th Pin as HIGH
+ 80002e4:	4b13      	ldr	r3, [pc, #76]	@ (8000334 <main+0x120>)
+ 80002e6:	695b      	ldr	r3, [r3, #20]
+ 80002e8:	4a12      	ldr	r2, [pc, #72]	@ (8000334 <main+0x120>)
+ 80002ea:	f443 4300 	orr.w	r3, r3, #32768	@ 0x8000
+ 80002ee:	6153      	str	r3, [r2, #20]
+	 // GPIOD->BSRR |= (1U<<15); To Reset LED4 Using BSRR Register. (Use ODR or BSSR any one)
+	 my_delay();
+ 80002f0:	f7ff ff72 	bl	80001d8 <my_delay>
+
+	 GPIOD->ODR &= ~(1U<<12); //To reset LED1 (connected to PD12on board) ---- IN Output Data register(ODR) set 12th Pin as LOW
+ 80002f4:	4b0f      	ldr	r3, [pc, #60]	@ (8000334 <main+0x120>)
+ 80002f6:	695b      	ldr	r3, [r3, #20]
+ 80002f8:	4a0e      	ldr	r2, [pc, #56]	@ (8000334 <main+0x120>)
+ 80002fa:	f423 5380 	bic.w	r3, r3, #4096	@ 0x1000
+ 80002fe:	6153      	str	r3, [r2, #20]
+	 // GPIOD->BSRR |= (1U<<28); To Reset LED1 Using BSRR Register. (Use ODR or BSSR any one)
+	 GPIOD->ODR &= ~(1U<<13); //To reset LED2 (connected to PD13on board) ---- IN Output Data register(ODR) set 13th Pin as LOW
+ 8000300:	4b0c      	ldr	r3, [pc, #48]	@ (8000334 <main+0x120>)
+ 8000302:	695b      	ldr	r3, [r3, #20]
+ 8000304:	4a0b      	ldr	r2, [pc, #44]	@ (8000334 <main+0x120>)
+ 8000306:	f423 5300 	bic.w	r3, r3, #8192	@ 0x2000
+ 800030a:	6153      	str	r3, [r2, #20]
+	  // GPIOD->BSRR |= (1U<<29); To Reset LED2 Using BSRR Register. (Use ODR or BSSR any one)
+	 GPIOD->ODR &= ~(1U<<14); //To reset LED3 (connected to PD14 on board) ---- IN Output Data register(ODR) set 14th Pin as LOW
+ 800030c:	4b09      	ldr	r3, [pc, #36]	@ (8000334 <main+0x120>)
+ 800030e:	695b      	ldr	r3, [r3, #20]
+ 8000310:	4a08      	ldr	r2, [pc, #32]	@ (8000334 <main+0x120>)
+ 8000312:	f423 4380 	bic.w	r3, r3, #16384	@ 0x4000
+ 8000316:	6153      	str	r3, [r2, #20]
+	 // GPIOD->BSRR |= (1U<<30); To Reset LED3 Using BSRR Register. (Use ODR or BSSR any one)
+	 GPIOD->ODR &= ~(1U<<15); //To reset LED4 (connected to PD15 on board) ---- IN Output Data register(ODR) set 15th Pin as LOW
+ 8000318:	4b06      	ldr	r3, [pc, #24]	@ (8000334 <main+0x120>)
+ 800031a:	695b      	ldr	r3, [r3, #20]
+ 800031c:	4a05      	ldr	r2, [pc, #20]	@ (8000334 <main+0x120>)
+ 800031e:	f423 4300 	bic.w	r3, r3, #32768	@ 0x8000
+ 8000322:	6153      	str	r3, [r2, #20]
+	 // GPIOD->BSRR |= (1U<<31); To Reset LED4 Using BSRR Register. (Use ODR or BSSR any one)
+	 my_delay();
+ 8000324:	f7ff ff58 	bl	80001d8 <my_delay>
+	 GPIOD->ODR |= (1U<<12); //To set LED1 (connected to PD12on board) ---- IN Output Data register(ODR) set 12th Pin as HIGH
+ 8000328:	bf00      	nop
+ 800032a:	e7c9      	b.n	80002c0 <main+0xac>
+ 800032c:	40023800 	.word	0x40023800
+ 8000330:	40020800 	.word	0x40020800
+ 8000334:	40020c00 	.word	0x40020c00
+
+08000338 <Reset_Handler>:
+
+  .section .text.Reset_Handler
+  .weak Reset_Handler
+  .type Reset_Handler, %function
+Reset_Handler:
+  ldr   r0, =_estack
+ 8000338:	480d      	ldr	r0, [pc, #52]	@ (8000370 <LoopForever+0x2>)
+  mov   sp, r0          /* set stack pointer */
+ 800033a:	4685      	mov	sp, r0
+/* Call the clock system initialization function.*/
+  bl  SystemInit
+ 800033c:	f3af 8000 	nop.w
+
+/* Copy the data segment initializers from flash to SRAM */
+  ldr r0, =_sdata
+ 8000340:	480c      	ldr	r0, [pc, #48]	@ (8000374 <LoopForever+0x6>)
+  ldr r1, =_edata
+ 8000342:	490d      	ldr	r1, [pc, #52]	@ (8000378 <LoopForever+0xa>)
+  ldr r2, =_sidata
+ 8000344:	4a0d      	ldr	r2, [pc, #52]	@ (800037c <LoopForever+0xe>)
+  movs r3, #0
+ 8000346:	2300      	movs	r3, #0
+  b LoopCopyDataInit
+ 8000348:	e002      	b.n	8000350 <LoopCopyDataInit>
+
+0800034a <CopyDataInit>:
+
+CopyDataInit:
+  ldr r4, [r2, r3]
+ 800034a:	58d4      	ldr	r4, [r2, r3]
+  str r4, [r0, r3]
+ 800034c:	50c4      	str	r4, [r0, r3]
+  adds r3, r3, #4
+ 800034e:	3304      	adds	r3, #4
+
+08000350 <LoopCopyDataInit>:
+
+LoopCopyDataInit:
+  adds r4, r0, r3
+ 8000350:	18c4      	adds	r4, r0, r3
+  cmp r4, r1
+ 8000352:	428c      	cmp	r4, r1
+  bcc CopyDataInit
+ 8000354:	d3f9      	bcc.n	800034a <CopyDataInit>
+
+/* Zero fill the bss segment. */
+  ldr r2, =_sbss
+ 8000356:	4a0a      	ldr	r2, [pc, #40]	@ (8000380 <LoopForever+0x12>)
+  ldr r4, =_ebss
+ 8000358:	4c0a      	ldr	r4, [pc, #40]	@ (8000384 <LoopForever+0x16>)
+  movs r3, #0
+ 800035a:	2300      	movs	r3, #0
+  b LoopFillZerobss
+ 800035c:	e001      	b.n	8000362 <LoopFillZerobss>
+
+0800035e <FillZerobss>:
+
+FillZerobss:
+  str  r3, [r2]
+ 800035e:	6013      	str	r3, [r2, #0]
+  adds r2, r2, #4
+ 8000360:	3204      	adds	r2, #4
+
+08000362 <LoopFillZerobss>:
+
+LoopFillZerobss:
+  cmp r2, r4
+ 8000362:	42a2      	cmp	r2, r4
+  bcc FillZerobss
+ 8000364:	d3fb      	bcc.n	800035e <FillZerobss>
+
+/* Call static constructors */
+  bl __libc_init_array
+ 8000366:	f000 f811 	bl	800038c <__libc_init_array>
+/* Call the application's entry point.*/
+  bl main
+ 800036a:	f7ff ff53 	bl	8000214 <main>
+
+0800036e <LoopForever>:
+
+LoopForever:
+  b LoopForever
+ 800036e:	e7fe      	b.n	800036e <LoopForever>
+  ldr   r0, =_estack
+ 8000370:	20020000 	.word	0x20020000
+  ldr r0, =_sdata
+ 8000374:	20000000 	.word	0x20000000
+  ldr r1, =_edata
+ 8000378:	20000000 	.word	0x20000000
+  ldr r2, =_sidata
+ 800037c:	080003f4 	.word	0x080003f4
+  ldr r2, =_sbss
+ 8000380:	20000000 	.word	0x20000000
+  ldr r4, =_ebss
+ 8000384:	2000001c 	.word	0x2000001c
+
+08000388 <ADC_IRQHandler>:
+ * @retval : None
+*/
+  .section .text.Default_Handler,"ax",%progbits
+Default_Handler:
+Infinite_Loop:
+  b Infinite_Loop
+ 8000388:	e7fe      	b.n	8000388 <ADC_IRQHandler>
+	...
+
+0800038c <__libc_init_array>:
+ 800038c:	b570      	push	{r4, r5, r6, lr}
+ 800038e:	4d0d      	ldr	r5, [pc, #52]	@ (80003c4 <__libc_init_array+0x38>)
+ 8000390:	4c0d      	ldr	r4, [pc, #52]	@ (80003c8 <__libc_init_array+0x3c>)
+ 8000392:	1b64      	subs	r4, r4, r5
+ 8000394:	10a4      	asrs	r4, r4, #2
+ 8000396:	2600      	movs	r6, #0
+ 8000398:	42a6      	cmp	r6, r4
+ 800039a:	d109      	bne.n	80003b0 <__libc_init_array+0x24>
+ 800039c:	4d0b      	ldr	r5, [pc, #44]	@ (80003cc <__libc_init_array+0x40>)
+ 800039e:	4c0c      	ldr	r4, [pc, #48]	@ (80003d0 <__libc_init_array+0x44>)
+ 80003a0:	f000 f818 	bl	80003d4 <_init>
+ 80003a4:	1b64      	subs	r4, r4, r5
+ 80003a6:	10a4      	asrs	r4, r4, #2
+ 80003a8:	2600      	movs	r6, #0
+ 80003aa:	42a6      	cmp	r6, r4
+ 80003ac:	d105      	bne.n	80003ba <__libc_init_array+0x2e>
+ 80003ae:	bd70      	pop	{r4, r5, r6, pc}
+ 80003b0:	f855 3b04 	ldr.w	r3, [r5], #4
+ 80003b4:	4798      	blx	r3
+ 80003b6:	3601      	adds	r6, #1
+ 80003b8:	e7ee      	b.n	8000398 <__libc_init_array+0xc>
+ 80003ba:	f855 3b04 	ldr.w	r3, [r5], #4
+ 80003be:	4798      	blx	r3
+ 80003c0:	3601      	adds	r6, #1
+ 80003c2:	e7f2      	b.n	80003aa <__libc_init_array+0x1e>
+ 80003c4:	080003ec 	.word	0x080003ec
+ 80003c8:	080003ec 	.word	0x080003ec
+ 80003cc:	080003ec 	.word	0x080003ec
+ 80003d0:	080003f0 	.word	0x080003f0
+
+080003d4 <_init>:
+ 80003d4:	b5f8      	push	{r3, r4, r5, r6, r7, lr}
+ 80003d6:	bf00      	nop
+ 80003d8:	bcf8      	pop	{r3, r4, r5, r6, r7}
+ 80003da:	bc08      	pop	{r3}
+ 80003dc:	469e      	mov	lr, r3
+ 80003de:	4770      	bx	lr
+
+080003e0 <_fini>:
+ 80003e0:	b5f8      	push	{r3, r4, r5, r6, r7, lr}
+ 80003e2:	bf00      	nop
+ 80003e4:	bcf8      	pop	{r3, r4, r5, r6, r7}
+ 80003e6:	bc08      	pop	{r3}
+ 80003e8:	469e      	mov	lr, r3
+ 80003ea:	4770      	bx	lr
